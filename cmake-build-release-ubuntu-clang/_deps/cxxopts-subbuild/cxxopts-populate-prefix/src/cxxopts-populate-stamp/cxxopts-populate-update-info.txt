@@ -1,0 +1,7 @@
+# This is a generated file and its contents are an internal implementation detail.
+# The patch step will be re-executed if anything in this file changes.
+# No other meaning or use of this file is supported.
+
+command (connected)=/workspace/liuye/CPP_Project/cmakeinstall/cmake-3.29.2/bin/cmake;-Dcan_fetch=YES;-P;/workspace/liuye/CPP_Project/LibLog/cmake-build-release-ubuntu-clang/_deps/cxxopts-subbuild/cxxopts-populate-prefix/tmp/cxxopts-populate-gitupdate.cmake
+command (disconnected)=/workspace/liuye/CPP_Project/cmakeinstall/cmake-3.29.2/bin/cmake;-Dcan_fetch=NO;-P;/workspace/liuye/CPP_Project/LibLog/cmake-build-release-ubuntu-clang/_deps/cxxopts-subbuild/cxxopts-populate-prefix/tmp/cxxopts-populate-gitupdate.cmake
+work_dir=/workspace/liuye/CPP_Project/LibLog/cmake-build-release-ubuntu-clang/_deps/cxxopts-src
