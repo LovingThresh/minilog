@@ -30,7 +30,7 @@ private:
 
 class Process final {
 public:
-    explicit Process(std::string_view name): m_name {std::move(name)};
+    explicit Process(std::string_view name): m_name {std::move(name)} {};
     void doWorkDuringTimeSlice() {
         std::cout << "Process " << m_name << " performing work during time slice." << std::endl;
     }
@@ -62,3 +62,4 @@ private:
     // RoundRobin<Process> mprocesses = RoundRobin<Process>(5);
 
 };
+#endif
