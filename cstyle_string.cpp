@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <list>
+#include <forward_list>
 #include <vector>
 #include <iterator>
 #include <memory>
@@ -130,6 +132,29 @@ std::string getFirstNameOfPerson(const Person& person) {
     return person.firstName;
 }
 
+template <class T>
+std::ostream& operator<<(std::ostream& ostr, const std::list<T>& list)
+{
+    for (auto& i : list)
+        ostr << ' ' << i;
+
+    return ostr;
+}
+
+std::list<std::string> getTotalEnrollment (const std::vector<std::list<std::string>>& courseStudents,
+        const std::list<std::string>& droppedStudents) {
+    std::list<std::string> allStudents;
+
+    for (auto& lst : courseStudents) {
+        allStudents.insert(std::cend(allStudents), std::cbegin(lst), std::cend(lst));
+    }
+    allStudents.sort();
+    allStudents.unique();
+    for (auto& str : droppedStudents) {
+        allStudents.remove(str);
+    }
+    return allStudents;
+}
 namespace CoreGuidelines {
 
     // std::function<void(std::istream&, int&)> read = [](auto& input, auto& value)
@@ -435,6 +460,36 @@ int main() {
     std::cout << str1 << " " << str2 << std::endl;
 
     // pop_back()不会返回已删除的元素，如果需要则需要通过back()获得这个元素，insert()可用在任意插入元素
+
+    // Learn how to use list.splice
+    std::list<std::string> dictionary {"aardvark", "ambulance"};
+    std::list<std::string> bWords {"bathos", "balderdash"};
+    dictionary.push_back("canticle");
+    dictionary.push_back("consumerism");
+    if (!bWords.empty()) {
+        const auto it { std::end(dictionary)};
+        dictionary.splice(it, bWords);
+    }
+    std::cout << "dictionary:" << dictionary << '\n';
+
+    std::forward_list<int> list1 {5, 6};
+    std::forward_list<int> list2 {1, 2, 3, 4};
+    std::forward_list<int> list3 {7, 8};
+
+    list1.splice_after(list1.before_begin(), list2);// [-1,^ 0, 1, 2]
+    list1.push_front(0);
+    // 获取最后一个元素的迭代器
+    auto it = list1.before_begin(); // 先获取到链表的前向迭代器（表示链表开始之前）
+    if (list1.empty()) {
+        std::cout << "The list is empty.\n";
+    } else {
+        auto iterTemp {it};
+        while (++iterTemp != end(list1)) {
+            ++it;
+        }
+    }
+    list1.insert_after(it, std::cbegin(list3), std::cend(list3));
+
     return 0;
 
 }
