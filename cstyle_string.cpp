@@ -490,6 +490,8 @@ int main() {
     }
     list1.insert_after(it, std::cbegin(list3), std::cend(list3));
 
+    std::vector<decltype(factorial)*> vectorFunction;
+    std::vector<int(*)(int, int)> vectorFunctionP;
     return 0;
 
 }

@@ -14,5 +14,8 @@ FetchContent_MakeAvailable(range-v3)
 FetchContent_Declare(cxxopts GIT_REPOSITORY https://github.com/jarro2783/cxxopts.git)
 FetchContent_MakeAvailable(cxxopts)
 
+#find_package(range-v3 CONFIG REQUIRED)
+#find_package(cxxopts CONFIG REQUIRED)
+
 add_executable(hexdump hexdump.cpp)
 target_link_libraries(hexdump PRIVATE range-v3 cxxopts)

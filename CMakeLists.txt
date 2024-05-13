@@ -7,7 +7,9 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 project(minilog LANGUAGES CXX)
 
 add_executable(example main.cpp
-        minilog.h)
+        minilog.h
+)
+
 add_executable(example_uniqueP learning_pointer.cpp
         StrBlob.h
         StrBlob.cpp)

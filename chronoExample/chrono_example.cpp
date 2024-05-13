@@ -44,10 +44,10 @@ int main() {
     const auto tokyo_time = getXTime(ny_time, "Asia/Tokyo");
 
     // 打印各时区对应的会议时间
-    std::cout << "会议时间安排如下：" << std::endl;
-    std::cout << "纽约时间: " << ny_time << std::endl;
-    std::cout << "伦敦时间: " << london_time << std::endl;
-    std::cout << "东京时间: " << tokyo_time << std::endl;
+    // std::cout << "会议时间安排如下：" << std::endl;
+    // std::cout << "纽约时间: " << ny_time << std::endl;
+    // std::cout << "伦敦时间: " << london_time << std::endl;
+    // std::cout << "东京时间: " << tokyo_time << std::endl;
 
     // 输出本时刻对应NY时间
     std::cout << getXTime() << std::endl;
@@ -70,23 +70,23 @@ int main() {
         std::chrono::system_clock::now();
 
     const std::time_t t_c = std::chrono::system_clock::to_time_t(now - 24h);
-    std::cout << "24 小时前，时间是 "
-              << std::put_time(std::localtime(&t_c), "%F %T。\n") << std::flush;
+    //std::cout << "24 小时前，时间是 "
+    //          << std::put_time(std::localtime(&t_c), "%F %T。\n") << std::flush;
 
     const std::chrono::time_point<std::chrono::steady_clock> start =
         std::chrono::steady_clock::now();
 
-    std::cout << "不同的时钟无法比较：\n"
-                 "  系统时间：" << now.time_since_epoch() << "\n"
-                 "  稳定时间：" << start.time_since_epoch() << '\n';
+    // std::cout << "不同的时钟无法比较：\n"
+    //             "  系统时间：" << now.time_since_epoch() << "\n"
+    //             "  稳定时间：" << start.time_since_epoch() << '\n';
 
     slow_motion();
 
     const auto end = std::chrono::steady_clock::now();
-    std::cout
-        << "缓慢的计算花费了 "
-        << std::chrono::duration_cast<std::chrono::microseconds>(end - start) << " ≈ "
-        << (end - start) / 1ms << "ms ≈ " // 几乎等价于以上形式，
-        << (end - start) / 1s << "s。\n";  // 但分别使用毫秒和秒
+    //std::cout
+    //    << "缓慢的计算花费了 "
+    //    << std::chrono::duration_cast<std::chrono::microseconds>(end - start) << " ≈ "
+    //    << (end - start) / 1ms << "ms ≈ " // 几乎等价于以上形式，
+    //    << (end - start) / 1s << "s。\n";  // 但分别使用毫秒和秒
     return 0;
 }
