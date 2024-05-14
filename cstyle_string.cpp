@@ -155,6 +155,8 @@ std::list<std::string> getTotalEnrollment (const std::vector<std::list<std::stri
     }
     return allStudents;
 }
+
+
 namespace CoreGuidelines {
 
     // std::function<void(std::istream&, int&)> read = [](auto& input, auto& value)

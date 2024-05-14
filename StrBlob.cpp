@@ -6,7 +6,7 @@ StrBlob::StrBlob() : data(std::make_shared<std::vector<std::string>>()) {}
 
 StrBlob::StrBlob(std::initializer_list<std::string> il) : data(std::make_shared<std::vector<std::string>>(il)) {}
 
-void StrBlob::pop_back() {
+void StrBlob::pop_back() const {
     check(0, "pop_back on empty StrBlob");
     data->pop_back();
 }

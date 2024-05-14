@@ -12,7 +12,9 @@ add_executable(example main.cpp
 
 add_executable(example_uniqueP learning_pointer.cpp
         StrBlob.h
-        StrBlob.cpp)
+        StrBlob.cpp
+        StrBlobPtr.cpp
+        StrBlobPtr.h)
 add_executable(example_c_string cstyle_string.cpp)
 
 target_include_directories(example PUBLIC .)
