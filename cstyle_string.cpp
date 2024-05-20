@@ -63,6 +63,24 @@ bool isUpperString(const std::string& s) {
     return false;
 }
 
+template <class T1, class T2>
+bool isEqual(const T1& container_L, const T2& container_R) {
+    if (container_L.size() != container_R.size()) {
+        return false;
+    }
+    auto L_Iterator = container_L.begin();
+    auto R_Iterator = container_R.begin();
+
+    while (L_Iterator != container_L.end() && R_Iterator != container_R.end()) {
+        if (*L_Iterator != *R_Iterator) {
+            return false;
+        }
+        ++L_Iterator;
+        ++R_Iterator;
+    }
+    return true;
+};
+
 // 确保谓词只接受一个与迭代器指向的元素类型兼容的参数
 bool isUpperString_A(const std::string& s) {
     return std::ranges::any_of(s.begin(), s.end(),[](const unsigned char c) {
@@ -494,6 +512,15 @@ int main() {
 
     std::vector<decltype(factorial)*> vectorFunction;
     std::vector<int(*)(int, int)> vectorFunctionP;
-    return 0;
 
+    // 判定两个vector<int>是否相等
+    std::vector<int> vectorCompare1 {1, 2, 3, 4};
+    std::vector<int> vectorCompare2 {1, 2, 3, 4, 5};
+    std::list<int> listCompare1 {1, 2, 3, 4};
+    std::list<int> listCompare2 {1, 2, 3, 4, 5};
+    std::cout << "vector 1 Equals vector 2 ? : " << (vectorCompare1 == vectorCompare2) << '\n';
+    std::cout << "vector 1 Equals list 1 ? " << isEqual<std::vector<int>, std::list<int>>(vectorCompare1, listCompare1) << '\n';
+    std::cout << "vector 1 Equals list 2 ? " << isEqual<std::vector<int>, std::list<int>>(vectorCompare1, listCompare2) << '\n';
+
+    return 0;
 }
