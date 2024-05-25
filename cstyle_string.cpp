@@ -13,7 +13,6 @@
 #include <thread>
 #include <numeric>
 #include <functional>
-
 using namespace std::literals::string_literals;
 
 template<class T, size_t N>
@@ -185,7 +184,6 @@ namespace CoreGuidelines {
     void print(auto& output, const auto& value) {
         output << value << "\n";
     }
-
 }
 int main() {
     // constexpr char cstring_example[]{'C', '+', '+', '\0'};
