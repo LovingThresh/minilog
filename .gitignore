@@ -2,3 +2,5 @@
 /cmake-build-release-ubuntu-clang/
 .idea/
 /doc/
+/cmake-build-debug-wsl/
+/cmake-build-debug/

@@ -520,5 +520,76 @@ int main() {
     std::cout << "vector 1 Equals list 1 ? " << isEqual<std::vector<int>, std::list<int>>(vectorCompare1, listCompare1) << '\n';
     std::cout << "vector 1 Equals list 2 ? " << isEqual<std::vector<int>, std::list<int>>(vectorCompare1, listCompare2) << '\n';
 
+    { // 从容器内部删除一个元素
+        std::list<int> lst = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        auto iterator = lst.begin();
+        while (iterator != lst.end()) {
+            if (*iterator % 2) {
+                iterator = lst.erase(iterator);
+            }
+            else {
+                ++iterator;
+            }
+        }
+        lst.erase(lst.begin(), lst.end());
+        for (auto i : lst) {
+            std::cout << i << " ";
+        }
+    }
+    {
+        int ia[] = {0, 1, 1, 2, 3, 5, 8, 13, 21, 55, 89};
+        std::vector<int> iaVector;
+        std::list<int> iaList;
+        for (auto i : ia) {
+            iaVector.push_back(i);
+            iaList.push_back(i);
+        }
+        auto itVector = iaVector.begin();
+        while (itVector != iaVector.end()) {
+            if (*itVector % 2 ) {
+                itVector = iaVector.erase(itVector);
+            }
+            else {
+                ++itVector;
+            }
+        }
+
+        auto itList = iaList.begin();
+        while (itList != iaList.end()) {
+            if (*itList % 2) {
+                ++itList;
+            }
+            else {
+                itList = iaList.erase(itList);
+            }
+        }
+        for (auto i : iaVector) {
+            std::cout << i << " ";
+        }
+        std::cout << '\n';
+        for (auto i : iaList) {
+            std::cout << i << " ";
+        }
+        std::cout << '\n';
+    }
+    {
+        std::vector<int> tempVector {1, 2, 3, 4};
+        std::cout << "Vector Size " << tempVector.size() << "  " << "Vector Capacity " << tempVector.capacity() << '\n';
+        tempVector.push_back(5);
+        std::cout << "Vector Size " << tempVector.size() << "  " << "Vector Capacity " << tempVector.capacity() << '\n';
+        tempVector.push_back(6);
+        tempVector.push_back(7);
+        std::cout << "Vector Size " << tempVector.size() << "  " << "Vector Capacity " << tempVector.capacity() << '\n';
+        for (int s = tempVector.size(), c = tempVector.capacity(); s <= c; s++) {
+            tempVector.push_back(s);
+        }
+        std::cout << "Vector Size " << tempVector.size() << "  " << "Vector Capacity " << tempVector.capacity() << '\n';
+        std::vector<char> vc {'h', 'e', 'l', 'l', 'o'};
+        std::string sv {vc.data(), vc.size()};
+        std::cout << sv << '\n';
+        auto pos1 = sv.find("r");
+        std::cout << pos1;
+    }
+
     return 0;
 }
