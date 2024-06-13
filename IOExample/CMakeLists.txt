@@ -1,0 +1,9 @@
+cmake_minimum_required(VERSION 3.18)
+project(io_example)
+
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_executable(io_example io_example.cpp)
+add_executable(tcp_example tcp_example.cpp)
