@@ -1,5 +1,7 @@
 #include "StrBlobPtr.h"
 
+#include <stdexcept>
+
 std::string& StrBlobPtr::deref() const {
     const auto p = check(curr, "dereference past end");
     return (*p)[curr];
