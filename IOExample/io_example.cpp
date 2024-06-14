@@ -5,7 +5,7 @@
 // 链接时需要链接Ws2_32.lib库
 #pragma comment(lib, "Ws2_32.lib")
 
-auto handle_client(const SOCKET client_socket) -> int {
+void handle_client(const SOCKET client_socket) {
     char buffer[1024];
 
     // 接收消息
@@ -16,11 +16,14 @@ auto handle_client(const SOCKET client_socket) -> int {
         // 发送响应
         const auto response = "Hello, Client!";
         send(client_socket, response, strlen(response), 0);
+    } else if (result == 0) {
+        std::cout << "Connection closing..." << std::endl;
+    } else {
+        std::cerr << "recv failed: " << WSAGetLastError() << std::endl;
     }
 
     // 关闭客户端套接字
     closesocket(client_socket);
-    return 0;
 }
 
 int main() {
@@ -79,6 +82,11 @@ int main() {
         }
 
         // 处理客户端连接
-        return handle_client(client_socket);
+        handle_client(client_socket);
     }
+
+    // 关闭监听套接字
+    closesocket(listen_socket);
+    WSACleanup();
+    return 0;
 }
