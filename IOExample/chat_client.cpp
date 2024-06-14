@@ -7,22 +7,22 @@
 
 using boost::asio::ip::tcp;
 
-typedef std::deque<chat_message> chat_message_queue;
+using chat_message_queue = std::deque<chat_message>;
 
 class chat_client {
 public:
-    chat_client(boost::asio::io_context&io_context,
-                const tcp::resolver::results_type&endpoints)
-        : io_context_(io_context),
-          socket_(io_context) {
+    chat_client(boost::asio::io_context& io_context,
+                const tcp::resolver::results_type& endpoints)
+        : m_io_context(io_context),
+          m_socket(io_context) {
         do_connect(endpoints);
     }
 
-    void write(const chat_message&msg) {
-        boost::asio::post(io_context_,
+    void write(const chat_message& msg) {
+        boost::asio::post(m_io_context,
                           [this, msg]() {
-                              const bool write_in_progress = !write_msgs_.empty();
-                              write_msgs_.push_back(msg);
+                              const bool write_in_progress = !m_write_msgs.empty();
+                              m_write_msgs.push_back(msg);
                               if (!write_in_progress) {
                                   do_write();
                               }
@@ -30,12 +30,12 @@ public:
     }
 
     void close() {
-        boost::asio::post(io_context_, [this]() { socket_.close(); });
+        boost::asio::post(m_io_context, [this]() { m_socket.close(); });
     }
 
 private:
-    void do_connect(const tcp::resolver::results_type&endpoints) {
-        boost::asio::async_connect(socket_, endpoints,
+    void do_connect(const tcp::resolver::results_type& endpoints) {
+        boost::asio::async_connect(m_socket, endpoints,
                                    [this](const boost::system::error_code&ec, tcp::endpoint) {
                                        if (!ec) {
                                            do_read_header();
@@ -44,55 +44,55 @@ private:
     }
 
     void do_read_header() {
-        boost::asio::async_read(socket_,
-                                boost::asio::buffer(read_msg_.data(), chat_message::header_length),
-                                [this](const boost::system::error_code&ec, std::size_t /*length*/) {
-                                    if (!ec && read_msg_.decode_header()) {
+        boost::asio::async_read(m_socket,
+                                boost::asio::buffer(m_read_msg.data(), chat_message::header_length),
+                                [this](const boost::system::error_code& ec, std::size_t /*length*/) {
+                                    if (!ec && m_read_msg.decode_header()) {
                                         do_read_body();
                                     }
                                     else {
-                                        socket_.close();
+                                        m_socket.close();
                                     }
                                 });
     }
 
     void do_read_body() {
-        boost::asio::async_read(socket_,
-                                boost::asio::buffer(read_msg_.body(), read_msg_.body_length()),
-                                [this](const boost::system::error_code&ec, std::size_t /*length*/) {
+        boost::asio::async_read(m_socket,
+                                boost::asio::buffer(m_read_msg.body(), m_read_msg.body_length()),
+                                [this](const boost::system::error_code& ec, std::size_t /*length*/) {
                                     if (!ec) {
-                                        std::cout.write(read_msg_.body(), read_msg_.body_length());
+                                        std::cout.write(m_read_msg.body(), m_read_msg.body_length());
                                         std::cout << "\n";
                                         do_read_header();
                                     }
                                     else {
-                                        socket_.close();
+                                        m_socket.close();
                                     }
                                 });
     }
 
     void do_write() {
-        boost::asio::async_write(socket_,
-                                 boost::asio::buffer(write_msgs_.front().data(),
-                                                     write_msgs_.front().length()),
-                                 [this](const boost::system::error_code&ec, std::size_t /*length*/) {
+        boost::asio::async_write(m_socket,
+                                 boost::asio::buffer(m_write_msgs.front().data(),
+                                                     m_write_msgs.front().length()),
+                                 [this](const boost::system::error_code& ec, std::size_t /*length*/) {
                                      if (!ec) {
-                                         write_msgs_.pop_front();
-                                         if (!write_msgs_.empty()) {
+                                         m_write_msgs.pop_front();
+                                         if (!m_write_msgs.empty()) {
                                              do_write();
                                          }
                                      }
                                      else {
-                                         socket_.close();
+                                         m_socket.close();
                                      }
                                  });
     }
 
 private:
-    boost::asio::io_context&io_context_;
-    tcp::socket socket_;
-    chat_message read_msg_;
-    chat_message_queue write_msgs_;
+    boost::asio::io_context& m_io_context;
+    tcp::socket m_socket;
+    chat_message m_read_msg;
+    chat_message_queue m_write_msgs;
 };
 
 int main(int argc, char* argv[]) {
@@ -122,7 +122,7 @@ int main(int argc, char* argv[]) {
         c.close();
         t.join();
     }
-    catch (std::exception&e) {
+    catch (std::exception& e) {
         std::cerr << "Exception: " << e.what() << "\n";
     }
 
