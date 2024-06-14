@@ -1,9 +1,12 @@
 #include <iostream>
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <windows.h>
 
 // 链接时需要链接Ws2_32.lib库
 #pragma comment(lib, "Ws2_32.lib")
+
+HANDLE shutdown_event;
 
 void handle_client(const SOCKET client_socket) {
     char buffer[1024];
@@ -14,7 +17,7 @@ void handle_client(const SOCKET client_socket) {
         std::cout << "Received from client: " << buffer << std::endl;
 
         // 发送响应
-        const auto response = "Hello, Client!";
+        const char* response = "Hello, Client, I am Server!";
         send(client_socket, response, strlen(response), 0);
     } else if (result == 0) {
         std::cout << "Connection closing..." << std::endl;
@@ -26,10 +29,28 @@ void handle_client(const SOCKET client_socket) {
     closesocket(client_socket);
 }
 
+DWORD WINAPI server_thread(LPVOID lpParam) {
+    const SOCKET listen_socket = reinterpret_cast<SOCKET>(lpParam);
+    SOCKET client_socket = INVALID_SOCKET;
+
+    while (WaitForSingleObject(shutdown_event, 0) == WAIT_TIMEOUT) {
+        // 接受客户端连接
+        client_socket = accept(listen_socket, nullptr, nullptr);
+        if (client_socket == INVALID_SOCKET) {
+            std::cerr << "Error accepting connection: " << WSAGetLastError() << std::endl;
+            continue;
+        }
+
+        // 处理客户端连接
+        handle_client(client_socket);
+    }
+
+    return 0;
+}
+
 int main() {
     WSADATA wsaData;
     SOCKET listen_socket = INVALID_SOCKET;
-    SOCKET client_socket = INVALID_SOCKET;
     struct sockaddr_in server_addr;
 
     // 初始化Winsock
@@ -71,22 +92,40 @@ int main() {
 
     std::cout << "Server is listening on port 8500..." << std::endl;
 
-    while (true) {
-        // 接受客户端连接
-        client_socket = accept(listen_socket, nullptr, nullptr);
-        if (client_socket == INVALID_SOCKET) {
-            std::cerr << "Error accepting connection: " << WSAGetLastError() << std::endl;
-            closesocket(listen_socket);
-            WSACleanup();
-            return 1;
-        }
-
-        // 处理客户端连接
-        handle_client(client_socket);
+    // 创建一个事件对象来通知服务器关闭
+    shutdown_event = CreateEvent(nullptr, TRUE, FALSE, nullptr);
+    if (shutdown_event == nullptr) {
+        std::cerr << "CreateEvent failed: " << GetLastError() << std::endl;
+        closesocket(listen_socket);
+        WSACleanup();
+        return 1;
     }
 
-    // 关闭监听套接字
+    // 创建服务器线程
+    const HANDLE server_thread_handle = CreateThread(nullptr, 0, server_thread,
+        reinterpret_cast<LPVOID>(listen_socket), 0, nullptr);
+    if (server_thread_handle == nullptr) {
+        std::cerr << "CreateThread failed: " << GetLastError() << std::endl;
+        CloseHandle(shutdown_event);
+        closesocket(listen_socket);
+        WSACleanup();
+        return 1;
+    }
+
+    std::cout << "Press Enter to stop the server..." << std::endl;
+    std::cin.get();
+
+    // 通知服务器线程停止
+    SetEvent(shutdown_event);
+
+    // 等待服务器线程退出
+    WaitForSingleObject(server_thread_handle, INFINITE);
+
+    // 清理资源
+    CloseHandle(server_thread_handle);
+    CloseHandle(shutdown_event);
     closesocket(listen_socket);
     WSACleanup();
+
     return 0;
 }

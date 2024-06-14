@@ -30,7 +30,7 @@ int main() {
     inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr);
 
     // 连接服务器
-    result = connect(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr));
+    result = connect(sockfd, reinterpret_cast<struct sockaddr *>(&server_addr), sizeof(server_addr));
     if (result == SOCKET_ERROR) {
         std::cerr << "Error connecting: " << WSAGetLastError() << std::endl;
         closesocket(sockfd);
@@ -39,7 +39,7 @@ int main() {
     }
 
     // 发送消息
-    const char* message = "Hello, Server!";
+    const char* message = "Hello, Server, I am Client!";
     result = send(sockfd, message, strlen(message), 0);
     if (result == SOCKET_ERROR) {
         std::cerr << "Error sending message: " << WSAGetLastError() << std::endl;
