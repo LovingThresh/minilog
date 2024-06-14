@@ -21,3 +21,9 @@ add_executable(boost_tcp_example boost_tcp_example.cpp)
 target_link_libraries(boost_tcp_example PRIVATE
         Boost::asio
         )
+
+add_executable(chat_client chat_client.cpp chat_message.h)
+target_link_libraries(chat_client PRIVATE Boost::asio)
+
+add_executable(chat_server chat_server.cpp chat_message.h)
+target_link_libraries(chat_server PRIVATE Boost::asio)
