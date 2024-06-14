@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.18)
 
-set(CMAKE_VERBOSE_MAKEFILE ON)
-if (NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release)
-endif()
 set(CMAKE_CXX_STANDARD 23)
 
 project(coreutils LANGUAGES CXX)

@@ -5,5 +5,19 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(io_example io_example.cpp)
+find_package(Boost REQUIRED COMPONENTS asio)
+
+add_executable(io_example io_example.cpp
+        )
 add_executable(tcp_example tcp_example.cpp)
+
+add_executable(boost_asio_example boost_io_example.cpp)
+
+target_link_libraries(boost_asio_example PRIVATE
+        Boost::asio
+        )
+
+add_executable(boost_tcp_example boost_tcp_example.cpp)
+target_link_libraries(boost_tcp_example PRIVATE
+        Boost::asio
+        )

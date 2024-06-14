@@ -3,8 +3,8 @@ project(thread_example)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS ON)
-set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 add_executable(thread_example thread_example.cpp)
 add_executable(mutex_example mutex_example.cpp)
 
