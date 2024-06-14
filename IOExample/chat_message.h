@@ -12,7 +12,7 @@ public:
     static constexpr std::size_t max_body_length = 512;
 
     chat_message()
-      : m_body_length(0)
+      : m_data{}, m_body_length{0}
     {
     }
 
@@ -46,7 +46,7 @@ public:
         return m_body_length;
     }
 
-    void body_length(std::size_t new_length)
+    void body_length(const std::size_t new_length)
     {
         m_body_length = new_length;
         if (m_body_length > max_body_length)
@@ -74,7 +74,7 @@ public:
     }
 
 private:
-    char m_data[header_length + max_body_length]{};
+    char m_data[header_length + max_body_length];
     std::size_t m_body_length;
 };
 
