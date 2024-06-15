@@ -28,8 +28,7 @@ public:
     static constexpr std::size_t max_body_length = 512;
 
     chat_message()
-      : m_data{}, m_body_length{0}
-    {
+      : m_data{"Hello"}, m_body_length{0} {
     }
 
     const char* data() const

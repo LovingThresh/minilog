@@ -9,6 +9,29 @@
 #include "chat_message.h"
 
 using boost::asio::ip::tcp;
+//----------------------------------------------------------------------
+void concatenateCharArrays(char* dest, const char* src1, const char* src2) {
+    // 首先，计算src1的长度（不包括结束符）
+    const size_t len_src1 = std::strlen(src1);
+
+    // 将src1的内容复制到dest
+    std::memcpy(dest, src1, len_src1);
+
+    // 更新dest的位置，指向src1内容的末尾
+    dest += len_src1;
+
+    // 计算src2的长度（同样不包括结束符）
+    const size_t len_src2 = std::strlen(src2);
+
+    // 将src2的内容复制到dest现在指向的位置
+    std::memcpy(dest, src2, len_src2);
+
+    // 更新dest的位置，再次指向src2内容的末尾
+    dest += len_src2;
+
+    // 添加结束符
+    *dest = '\0';
+}
 
 //----------------------------------------------------------------------
 
@@ -21,7 +44,7 @@ public:
     virtual ~chat_participant() {
     }
 
-    virtual void deliver(const chat_message&msg) = 0;
+    virtual void deliver(const chat_message& msg) = 0;
 };
 
 typedef std::shared_ptr<chat_participant> chat_participant_ptr;
@@ -74,8 +97,25 @@ public:
     }
 
     void deliver(const chat_message& msg) override {
+
+        char result_line[msg.max_body_length];
+        const size_t length = std::stoi(std::string(msg.data(), msg.header_length), nullptr, 10);
+        std::vector<char> sub_client_line(length + 1);
+        for (int running_point = msg.header_length; running_point < msg.header_length + length; running_point++) {
+            sub_client_line[running_point - msg.header_length] =  msg.data()[running_point];
+        }
+
+        sub_client_line[length] = '\0';
+        concatenateCharArrays(result_line, server_line, sub_client_line.data());
+
+        chat_message new_message;
+        new_message.body_length(std::strlen(result_line)); // 设置消息体的长度
+        std::memcpy(new_message.body(), result_line, new_message.body_length()); // 复制消息体数据
+        new_message.encode_header(); // 编码消息头
+
         const bool write_in_progress = !m_write_msgs.empty();
-        m_write_msgs.push_back(msg);
+        m_write_msgs.push_back(new_message);
+
         if (!write_in_progress) {
             do_write();
         }
@@ -133,6 +173,7 @@ private:
     chat_room&m_room;
     chat_message m_read_msg;
     chat_message_queue m_write_msgs;
+    static constexpr char server_line[] = "This is from Server! ";
 };
 
 //----------------------------------------------------------------------
