@@ -6,6 +6,7 @@
 #include <set>
 #include <utility>
 #include <boost/asio.hpp>
+
 #include "chat_message.h"
 
 using boost::asio::ip::tcp;
@@ -203,6 +204,7 @@ private:
 //----------------------------------------------------------------------
 
 int main(int argc, char* argv[]) {
+
     try {
         if (argc < 2) {
             std::cerr << "Usage: chat_server <port> [<port> ...]\n";
