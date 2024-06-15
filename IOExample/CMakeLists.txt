@@ -27,6 +27,3 @@ target_link_libraries(chat_client PRIVATE Boost::asio)
 
 add_executable(chat_server chat_server.cpp chat_message.h)
 target_link_libraries(chat_server PRIVATE Boost::asio)
-
-add_executable(logging logging.cpp)
-target_link_libraries(logging PRIVATE Boost::log)
