@@ -47,7 +47,7 @@ void logger_init() {
 // 文件操作函数
 void openFile(const char* filePath)
 {
-    spdlog::info("Attempting to open file: {}", filePath);
+    spdlog::info("Attempting to open file: {0}", filePath);
 
     // 使用gsl::final_action确保在作用域结束时打印消息，这里仅作演示，实际上ofstream会自动关闭
     gsl::final_action atExit{[] {
@@ -61,7 +61,7 @@ void openFile(const char* filePath)
         file.close();
         spdlog::info("File written and closed successfully");
     } catch (const std::exception& e) {
-        spdlog::error("Caught exception: {}", e.what());
+        spdlog::error("Caught exception: {0}", e.what());
     }
 }
 
