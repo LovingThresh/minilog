@@ -1,7 +1,13 @@
+
+#include <string>
 #include <fstream>
-#include <boost/log/trivial.hpp>
-#include "spdlog/spdlog.h"
+#include <iostream>
+#include <functional> // 为了std::hash
+
 #include <gsl/gsl_util>
+#include "spdlog/spdlog.h"
+#include <boost/log/trivial.hpp>
+#define CALL_WITH_MAX(x, y) f((x) > (y) ? (x) : (y))
 
 void logger_init() {
     spdlog::set_pattern("[%H:%M:%S %z] [%n] [%^---%L---%$] [thread %t] %v");
@@ -43,6 +49,20 @@ void logger_init() {
 
 // }
 
+class Student {
+public:
+    std::string grade;
+
+    // 假设添加一个哈希函数，这里仅作为演示，实际应用中可能需要更复杂的实现
+    size_t GetHashCode() const {
+        std::hash<std::string> hasher;
+        return hasher(grade);
+    }
+};
+
+void UpdateGrade(Student& student, const std::string& newGrade) {
+    student.grade = newGrade;
+}
 
 // 文件操作函数
 void openFile(const char* filePath)
@@ -67,8 +87,13 @@ void openFile(const char* filePath)
 
 int main() {
 
-    logger_init();
-    openFile("example.txt");
+    // logger_init();
+    // openFile("example.txt");
+    Student student{"A"};
+    std::cout << "该学生的Hash Code是" << student.GetHashCode() << ", 学生的成绩是" << student.grade << std::endl;
+
+    UpdateGrade(student, "B");
+    std::cout << "该学生的Hash Code是" << student.GetHashCode() << ", 学生的成绩是" << student.grade << std::endl;
 
     return 0;
 }
