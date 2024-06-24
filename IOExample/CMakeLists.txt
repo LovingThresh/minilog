@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-find_package(Boost REQUIRED COMPONENTS asio)
+find_package(Boost 1.84.0 REQUIRED COMPONENTS asio)
 
 add_executable(io_example io_example.cpp)
 add_executable(tcp_example tcp_example.cpp)
