@@ -2,6 +2,15 @@
 #include <string>
 #include <utility>
 #include <memory>
+#include <optional>
+
+std::optional<int> parseInt(const std::string_view str) {
+    try {
+        return std::stoi(std::string(str));
+    } catch (...) { // 一种用来捕获所有类型异常的通用方式
+        return std::nullopt;
+    }
+}
 
 // Product base class
 class Product {
