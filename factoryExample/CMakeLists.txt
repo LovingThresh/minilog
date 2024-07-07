@@ -4,4 +4,5 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(FactorySample factoryExample.cpp)
+add_executable(factorySample factoryExample.cpp)
+add_executable(salesSample SalesData.cpp)
