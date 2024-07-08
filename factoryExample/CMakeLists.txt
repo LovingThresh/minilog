@@ -6,3 +6,4 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(factorySample factoryExample.cpp)
 add_executable(salesSample SalesData.cpp)
+add_executable(screenSample Screen.cpp)

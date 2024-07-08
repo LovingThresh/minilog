@@ -1,27 +1,46 @@
 #include <iostream>
 #include <exception>
 
+class Sales_data;
+
+Sales_data add(const Sales_data&, const Sales_data&);
+
+std::ostream& print(std::ostream&, const Sales_data&);
+
+std::istream& read(std::istream&, Sales_data&);
+
 class Sales_data {
+    friend Sales_data add(const Sales_data&, const Sales_data&);
+
+    friend std::ostream& print(std::ostream&, const Sales_data&);
+
+    friend std::istream& read(std::istream&, Sales_data&);
+
 public:
     Sales_data() = default;
-    explicit Sales_data(std::istream& is);
+
+    explicit Sales_data::Sales_data(std::istream& is) {
+        read(is, *this);
+    }
+
     explicit Sales_data(std::string&& s) : bookNo(std::move(s)) {
     }
+
     Sales_data(std::string&& s, const unsigned int n, const double d)
         : bookNo(std::move(s)), units_sold(n), revenue(d * n) {
     }
+
     [[nodiscard]] std::string isbn() const { return bookNo; }
+
     Sales_data& combine(const Sales_data&);
+
+private:
     [[nodiscard]] double avg_price() const;
 
     std::string bookNo;
     unsigned units_sold = 0;
     double revenue = 0.0;
 };
-
-Sales_data add(const Sales_data&, const Sales_data&);
-std::ostream& print(std::ostream&, const Sales_data&);
-std::istream& read(std::istream&, Sales_data&);
 
 Sales_data& Sales_data::combine(const Sales_data& rhs) {
     units_sold += rhs.units_sold;
@@ -60,26 +79,23 @@ std::ostream& print(std::ostream& os, const Sales_data& item) {
     return os;
 }
 
-Sales_data::Sales_data(std::istream& is) {
-    read(is, *this);
-}
-
 int main() {
     try {
-        if (Sales_data currentBookData; read(std::cin, currentBookData)) {
-            Sales_data trans;
-            while (read(std::cin, trans)) {
-                if (currentBookData.isbn() == trans.isbn())
-                    currentBookData.combine(trans);
-                else {
-                    print(std::cout, currentBookData) << '\n';
-                    currentBookData = trans;
-                }
+        Sales_data total{std::cin}; // 使用构造函数初始化total
+
+        while (std::cin) {
+            if (Sales_data trans{std::cin}; total.bookNo == trans.bookNo) {
+                total.combine(trans);
             }
-            print(std::cout, currentBookData) << '\n';
+            else {
+                print(std::cout, trans) << '\n';
+                total = trans;
+            }
         }
+        print(std::cout, total) << '\n';
     }
     catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
+        return -1;
     }
 }
