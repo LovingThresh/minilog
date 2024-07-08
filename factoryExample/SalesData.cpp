@@ -84,7 +84,7 @@ int main() {
         Sales_data total{std::cin}; // 使用构造函数初始化total
 
         while (std::cin) {
-            if (Sales_data trans{std::cin}; total.bookNo == trans.bookNo) {
+            if (Sales_data trans{std::cin}; total.isbn() == trans.isbn()) {
                 total.combine(trans);
             }
             else {
