@@ -1,6 +1,7 @@
 #ifndef STRVEC_HPP
 #define STRVEC_HPP
 
+#include <initializer_list>
 #include <string>
 #include <utility>
 #include <xmemory>
@@ -8,6 +9,7 @@
 class StrVec {
 public:
     StrVec();
+    StrVec(std::initializer_list<std::string>);
 
     StrVec(const StrVec &);
 
@@ -63,6 +65,12 @@ inline void StrVec::free() {
     }
 }
 
+inline StrVec::StrVec(const std::initializer_list<std::string> il) {
+    const auto newdata = alloc_n_copy(il.begin(), il.end());
+    elements = newdata.first;
+    first_free = cap = newdata.second;
+}
+
 inline StrVec::StrVec(const StrVec &s) {
     const auto newData = alloc_n_copy(s.begin(), s.end());
     elements = newData.first;
@@ -86,7 +94,7 @@ inline void StrVec::resize(const size_t n) {
     }
 }
 
-inline void StrVec::resize(const size_t n, const std::string & s) {
+inline void StrVec::resize(const size_t n, const std::string &s) {
     // 如果n小于当前大小，则删除尾部元素
     // 如果n大于当前大小，则添加默认构造的元素
     if (n > size()) {
