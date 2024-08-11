@@ -2,13 +2,14 @@
 #define STRVEC_HPP
 
 #include <initializer_list>
+#include <iostream>
 #include <string>
 #include <utility>
 #include <xmemory>
 
 class StrVec {
 public:
-    StrVec();
+    StrVec() = default;
     StrVec(std::initializer_list<std::string>);
 
     StrVec(const StrVec &);
@@ -72,6 +73,7 @@ inline StrVec::StrVec(const std::initializer_list<std::string> il) {
 }
 
 inline StrVec::StrVec(const StrVec &s) {
+    std::cout << "Copy constructor" << std::endl;
     const auto newData = alloc_n_copy(s.begin(), s.end());
     elements = newData.first;
     first_free = cap = newData.second;
@@ -137,6 +139,7 @@ inline void StrVec::push_back(const std::string &s) {
 }
 
 inline StrVec &StrVec::operator=(const StrVec &rhs) {
+    std::cout << "Copy assignment" << std::endl;
     const auto data = alloc_n_copy(rhs.begin(), rhs.end());
     free();
     elements = data.first;
@@ -159,4 +162,7 @@ inline void StrVec::reallocate() {
     first_free = dest;
     cap = elements + newcapacity;
 }
+
+std::allocator<std::string> StrVec::alloc;
+
 #endif //STRVEC_HPP
