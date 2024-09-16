@@ -8,6 +8,7 @@ project(minilog LANGUAGES CXX)
 
 add_executable(example main.cpp
         minilog.h
+        functionBind/main.cpp
 )
 
 add_executable(example_uniqueP learning_pointer.cpp
@@ -31,3 +32,4 @@ add_subdirectory(printfExample)
 add_subdirectory(functionExample)
 add_subdirectory(vectorExample)
 add_subdirectory(referenceExample)
+add_subdirectory(functionBind)
