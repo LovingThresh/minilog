@@ -61,9 +61,67 @@ void processParallelFind()
     std::cout << "并行查找耗时: " << dDuration.count() << " 秒" << '\n';
 }
 
+class TextFinder
+{
+public:
+    // 左值引用构造函数，处理 const std::string& 情况
+    explicit TextFinder(const std::string& sInputText) : m_sText(sInputText) {}
+
+    // 右值引用构造函数，处理 std::string&& 情况
+    explicit TextFinder(std::string&& sInputText) : m_sText(std::move(sInputText)) {}
+
+    // 查找并打印字符位置的方法
+    void findAndPrintCharPosition(const char nTargetChar) const
+    {
+        const auto pCharPos = std::find(m_sText.cbegin(), m_sText.cend(), nTargetChar);
+        if (pCharPos != m_sText.cend())
+        {
+            std::cout << "Character '" << nTargetChar
+                      << "' found at position: " << std::distance(m_sText.cbegin(), pCharPos) << '\n';
+        }
+        else
+        {
+            std::cout << "Character '" << nTargetChar << "' not found.\n";
+        }
+    }
+
+    // 查找并打印子字符串位置的方法
+    void searchAndPrintSubstringPosition(const std::string& sTargetSubstring) const
+    {
+        const auto pSubstringPos =
+            std::search(m_sText.cbegin(), m_sText.cend(), sTargetSubstring.cbegin(), sTargetSubstring.cend());
+
+        if (pSubstringPos != m_sText.cend())
+        {
+            std::cout << "Substring \"" << sTargetSubstring
+                      << "\" found at position: " << std::distance(m_sText.cbegin(), pSubstringPos) << '\n';
+        }
+        else
+        {
+            std::cout << "Substring \"" << sTargetSubstring << "\" not found.\n";
+        }
+    }
+
+private:
+    // 私有成员变量，使用 m_ 前缀
+    std::string m_sText;
+};
+
 int main()
 {
     processStandardFind(); // 调用标准查找函数
     processParallelFind(); // 调用并行查找函数
+
+    const std::string sText = "The quick brown fox jumps over the lazy dog.";
+    constexpr char cNTargetChar = 'o';
+    const std::string sTargetSubstring = "lazy";
+
+    // 创建 TextFinder 对象
+    const TextFinder textFinder(sText);
+
+    // 调用方法查找字符和子字符串的位置
+    textFinder.findAndPrintCharPosition(cNTargetChar);
+    textFinder.searchAndPrintSubstringPosition(sTargetSubstring);
+
     return 0;
 }
