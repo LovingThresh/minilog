@@ -5,3 +5,5 @@
 /cmake-build-debug-wsl/
 /cmake-build-debug/
 /out/
+/.vs
+/cmake-build-debug-mingw
