@@ -1,7 +1,6 @@
 #pragma once
 #include <utility>
 
-// 今天尝试实现一下智能指针的SharedPointer
 template <typename T>
 struct SpControlBlock
 {
