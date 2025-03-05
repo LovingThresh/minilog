@@ -1,16 +1,15 @@
 /*
  * @file: main.cpp
  * @brief:
- * 
+ *
  * @author: liuye
  * @date: 2024.10.25
  * @copyright (c) 2013-2024 Honghu Yuntu Corporation
  */
 
-#include <algorithm>
+#include <initializer_list>
 #include <iostream>
-#include <vector>
-#include <boost/scope_exit.hpp>
+#include <algorithm>
 #include <opencv2/core.hpp>
 
 template <typename T = int, int Size = 10>
@@ -41,37 +40,69 @@ public:
         std::cout << "~Container!\n";
     }
 
-    static T m_variable;
-
 private:
     T* m_pBuffer;
 };
 
-// 模板类的静态成员变量属于类的所有特化，因此需要单独定义。
-template <typename T = int, int Size = 10>
-T Container<T, Size>::m_variable;
-
-
-int main()
+/*!
+ * \brief 基础版本：没有参数时，递归终止
+ */
+void printX()
 {
-    int data = 42;
 
-    // 使用 Lambda 表达式在作用域退出时执行清理操作
-    BOOST_SCOPE_EXIT(&data) {
-        std::cout << "Scope exit: Cleaning up, data = " << data << std::endl;
-    } BOOST_SCOPE_EXIT_END
+}
 
-    BOOST_SCOPE_EXIT(void)
-    {
-        std::cout << "Scope exit: Cleaning up" << std::endl;
-    } BOOST_SCOPE_EXIT_END
-    
-    const std::vector<int> vec {1, 3, 5, 7, 2, 9};
-    std::ranges::for_each(vec,
-                  [](const int n) -> void
-                  {
-                      std::cout << n << ',';
-                  });
-    // std::unique_ptr<Container<double, 12>, ContainerDeleter<double, 12>> pContainer(new Container<double, 12>);
+/*!
+ * \brief This function template recursively prints each argument passed to it.
+ * The base case is an overload with no parameters, which terminates the recursion.
+ *
+ * \tparam T The type of the first argument.
+ * \tparam Types The types of the remaining arguments.
+ * \param firstAgr The first argument to be printed.
+ * \param args The remaining arguments to be printed.
+ */
+template <typename T, typename... Types>
+void printX(const T& firstAgr, const Types&... args)
+{
+    std::cout << firstAgr << std::endl;
+    printX(args...);
+}
+
+template <std::uint64_t N>
+struct Fib
+{
+    static constexpr std::uint64_t Value = Fib<N - 1>::Value + Fib<N - 2>::Value;
+};
+
+template <>
+struct Fib<1>
+{
+    static constexpr std::uint64_t Value = 1;
+};
+
+template <>
+struct Fib<2>
+{
+    static constexpr std::uint64_t Value = 1;
+};
+
+void changePointer(int*& ptr) {
+    // 将指针指向一个新的地址
+    ptr = new int(42);  // 指向新分配的内存
+}
+
+void changePointerByValue(const int* ptr) {
+    // 将指针指向一个新的地址
+    ptr = new int(420);  // 指向新分配的内存
+    delete ptr;
+}
+
+int main() {
+    int* p = new int (10);    // 初始指针为空
+    changePointer(p);     // 将p的指向改为新分配的内存
+    std::cout << *p << std::endl;  // 输出42
+    changePointerByValue(p);  // 尝试在函数内部修改p
+    std::cout << *p << std::endl;  // 输出42
+    delete p;            // 释放内存
     return 0;
 }
