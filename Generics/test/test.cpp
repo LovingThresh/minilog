@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string_view>
 #include <utility>
+#include <type_traits>
 #include <gtest/gtest.h>
 
 TEST(LambdaCapture, ValueCapture) {
@@ -122,6 +123,54 @@ auto maximum(T firstArg, U secondArg, Rest... rest) {
 TEST(MetaMaxm, MetaProgram_AiasMetaProgram_Test)
 {
     std::cout << maximum(1, 2.0, 3.9, 2.1, 0.4, 5, 6.9, 12.1, 'a');
+}
+
+TEST(RValue, RValueForString)
+{
+    std::string s1 ("hello");
+    std::string s2 ("world");
+    s1 + s2 = s2;
+    std::cout << s1;
+    std::cout << s2;
+    std::string() = "hello";
+    std::vector<int> v1 = {1, 2, 3, 4};
+    v1.insert(v1.end(), 2);
+}
+
+struct Test1
+{
+    int f;
+};
+
+struct Test2
+{
+    static int f()
+    {
+        return 42;
+    };
+};
+
+struct Test3
+{
+
+};
+
+template <typename T>
+concept HasMemF = requires(T t) {
+    { t.f() } -> std::same_as<int>;
+};
+
+template <typename T>
+requires HasMemF<T>
+void func(const T& t)
+{
+
+}
+
+TEST(HasMemF, HasMemF)
+{
+    constexpr Test2 t;
+    func(t);
 }
 
 int main(int argc, char** argv) {
